@@ -12,7 +12,20 @@
           "package_name": "com.example.trainer"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "543462613461-tc24ra2vid170jdis4crvc5acsb0p77j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.trainer",
+            "certificate_hash": "f925a4ea1211b57ff9231f6e0f78fe706775d27c"
+          }
+        },
+        {
+          "client_id": "543462613461-tqo43jn58brr4sdqrvefl11c5454ttli.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAeNiL8LhnCA6HviUAHzS8DnceoXeGCmfM"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "543462613461-tqo43jn58brr4sdqrvefl11c5454ttli.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
