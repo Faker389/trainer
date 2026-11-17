@@ -1,0 +1,12 @@
+{
+  "indexes": [],
+  "fieldOverrides": [
+    { "collectionGroup": "months", "fieldPath": "d", "indexes": [] },
+    { "collectionGroup": "months", "fieldPath": "e", "indexes": [] },
+    { "collectionGroup": "months", "fieldPath": "x", "indexes": [] },
+    { "collectionGroup": "months", "fieldPath": "u", "indexes": [] },
+    { "collectionGroup": "users", "fieldPath": "meta", "indexes": [] },
+    { "collectionGroup": "users", "fieldPath": "months", "indexes": [] },
+    { "collectionGroup": "users", "fieldPath": "profile", "indexes": [] }
+  ]
+}
