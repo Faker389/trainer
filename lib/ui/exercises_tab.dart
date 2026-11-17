@@ -5,6 +5,7 @@ import '../data/store.dart';
 import 'exercise_browser.dart';
 import 'exercise_screen.dart';
 import 'technique_setup_screen.dart';
+import 'widgets.dart';
 
 class ExercisesTab extends StatelessWidget {
   const ExercisesTab({super.key});
@@ -31,18 +32,11 @@ class ExercisesTab extends StatelessWidget {
         body: ExerciseBrowser(
           onTap: (e) => openExercise(context, e.id),
           onLongPress: (e) => _delete(context, e),
-          trailing: (e) => Row(mainAxisSize: MainAxisSize.min, children: [
-            IconButton(
-              tooltip: 'Jak wykonać',
-              icon: const Icon(Icons.menu_book_outlined),
-              onPressed: () => openExercise(context, e.id),
-            ),
-            IconButton(
-              tooltip: 'Sprawdź technikę',
-              icon: const Icon(Icons.videocam_outlined),
-              onPressed: () => openTechniqueCheck(context, e),
-            ),
-          ]),
+          trailing: (e) => IconButton(
+            tooltip: 'Sprawdź technikę',
+            icon: Icon(Icons.videocam_outlined, color: context.shade(0.45)),
+            onPressed: () => openTechniqueCheck(context, e),
+          ),
         ),
         floatingActionButton: FloatingActionButton.extended(
           heroTag: 'fab-exercises',

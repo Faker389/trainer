@@ -60,20 +60,6 @@ class CategoryAvatar extends StatelessWidget {
   final MuscleCategory category;
   const CategoryAvatar(this.category, {super.key});
 
-  static const _icons = {
-    MuscleCategory.chest: Icons.fitness_center,
-    MuscleCategory.back: Icons.rowing,
-    MuscleCategory.legs: Icons.directions_run,
-    MuscleCategory.glutes: Icons.sports_gymnastics,
-    MuscleCategory.shoulders: Icons.accessibility_new,
-    MuscleCategory.biceps: Icons.sports_martial_arts,
-    MuscleCategory.triceps: Icons.sports_handball,
-    MuscleCategory.forearms: Icons.back_hand,
-    MuscleCategory.core: Icons.self_improvement,
-    MuscleCategory.calves: Icons.directions_walk,
-    MuscleCategory.cardio: Icons.monitor_heart,
-  };
-
   @override
   Widget build(BuildContext context) => Container(
         width: 42,
@@ -83,18 +69,22 @@ class CategoryAvatar extends StatelessWidget {
           color: category.color.withValues(alpha: 0.16),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(_icons[category] ?? Icons.fitness_center, color: category.color, size: 22),
+        child: Text(
+          category.label.substring(0, 2),
+          style: TextStyle(color: category.color, fontWeight: FontWeight.w800, fontSize: 15),
+        ),
       );
 }
 
 class SectionHeader extends StatelessWidget {
   final String text;
   final Widget? trailing;
-  const SectionHeader(this.text, {super.key, this.trailing});
+  final Color? color;
+  const SectionHeader(this.text, {super.key, this.trailing, this.color});
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
+    final primary = color ?? Theme.of(context).colorScheme.primary;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 10),
       child: Row(children: [

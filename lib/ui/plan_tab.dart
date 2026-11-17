@@ -31,7 +31,7 @@ class PlanTab extends StatelessWidget {
           ],
         ),
       );
-      if (wd == null) return;
+      if (wd == null || !context.mounted) return;
       final day = store.splitFor(wd);
       var target = t.days.first;
       if (day.exerciseIds.isNotEmpty) {
@@ -221,52 +221,68 @@ class PlanTab extends StatelessWidget {
           return FadeSlide(
             index: i,
             child: Card(
-            margin: const EdgeInsets.symmetric(vertical: 4),
-            color: isToday ? scheme.primary.withValues(alpha: 0.10) : null,
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-              title: Row(children: [
-                Expanded(
-                  child: Text(weekdayNames[wd - 1], style: const TextStyle(fontWeight: FontWeight.w700)),
-                ),
-                if (isToday)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: scheme.primary.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(10),
+              margin: const EdgeInsets.symmetric(vertical: 3),
+              color: isToday ? scheme.primary.withValues(alpha: 0.10) : null,
+              child: InkWell(
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => SplitDayEditor(weekday: wd))),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 10, 6, 10),
+                  child: Row(children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: day.isRest ? context.faintFill(0.10) : scheme.primary.withValues(alpha: 0.22),
+                        borderRadius: BorderRadius.circular(9),
+                      ),
+                      child: Icon(
+                        day.isRest ? Icons.bedtime_outlined : Icons.fitness_center,
+                        color: day.isRest ? context.shade(0.7) : scheme.primary,
+                        size: 17,
+                      ),
                     ),
-                    child: Text('DZIŚ',
-                        style: TextStyle(color: scheme.primary, fontSize: 10, fontWeight: FontWeight.w800)),
-                  ),
-              ]),
-              subtitle: Text(
-                day.isRest
-                    ? 'Odpoczynek'
-                    : '${day.name.isEmpty ? 'Trening' : day.name} · ${names.length} ćw.\n${names.join(', ')}',
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: context.shade(0.54), height: 1.4),
-              ),
-              isThreeLine: !day.isRest,
-              leading: Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: day.isRest
-                      ? context.faintFill(0.05)
-                      : scheme.primary.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(12),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Row(children: [
+                          Text(weekdayNames[wd - 1], style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              day.isRest
+                                  ? 'Odpoczynek'
+                                  : '${day.name.isEmpty ? 'Trening' : day.name} · ${names.length} ćw.',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: context.shade(0.75), fontSize: 13),
+                            ),
+                          ),
+                          if (isToday)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: scheme.primary.withValues(alpha: 0.18),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text('DZIŚ',
+                                  style: TextStyle(color: scheme.primary, fontSize: 10, fontWeight: FontWeight.w800)),
+                            ),
+                        ]),
+                        if (names.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            names.join(', '),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: context.shade(0.6), fontSize: 12),
+                          ),
+                        ],
+                      ]),
+                    ),
+                    Icon(Icons.chevron_right, color: context.shade(0.5), size: 20),
+                  ]),
                 ),
-                child: Icon(
-                  day.isRest ? Icons.bedtime_outlined : Icons.fitness_center,
-                  color: day.isRest ? context.shade(0.38) : scheme.primary,
-                  size: 20,
-                ),
               ),
-              trailing: Icon(Icons.chevron_right, color: context.shade(0.38)),
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => SplitDayEditor(weekday: wd))),
-            ),
             ),
           );
         },

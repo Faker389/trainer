@@ -46,14 +46,20 @@ class ProgressTab extends StatelessWidget {
 
     final exercisesUsed = [for (final id in {for (final s in sets) s.exerciseId}) store.exercise(id)].whereType<Exercise>();
     final cutoff = dateKey(now.subtract(const Duration(days: 30)));
-    final recentPrs = <(Exercise, WorkoutSet)>[];
+    final recentPrs = <(Exercise, WorkoutSet, int)>[];
     final best1rm = <(Exercise, ExerciseStats)>[];
     for (final ex in exercisesUsed) {
       final st = store.stats(ex);
-      for (final s in st.sets) {
-        if (st.prIds.contains(s.id) && s.date.compareTo(cutoff) >= 0) recentPrs.add((ex, s));
-      }
       if (st.bestE1rm > 0) best1rm.add((ex, st));
+      if (st.days.isEmpty) continue;
+      final firstDay = st.sets.first.date;
+      final prs = [
+        for (final s in st.sets)
+          if (st.prIds.contains(s.id) && s.date.compareTo(cutoff) >= 0 && s.date != firstDay) s,
+      ];
+      if (prs.isEmpty) continue;
+      final best = prs.reduce((a, b) => _prScore(ex, b) > _prScore(ex, a) ? b : a);
+      recentPrs.add((ex, best, prs.length));
     }
     recentPrs.sort((a, b) => compareSets(b.$2, a.$2));
     best1rm.sort((a, b) => b.$2.bestE1rm.compareTo(a.$2.bestE1rm));
@@ -100,7 +106,7 @@ class ProgressTab extends StatelessWidget {
         ),
         SectionHeader('Rekordy z ostatnich 30 dni (${recentPrs.length})'),
         if (recentPrs.isEmpty) const EmptyHint('Brak nowych rekordów w tym miesiącu. Do dzieła!', icon: Icons.emoji_events),
-        for (final (ex, s) in recentPrs.take(15))
+        for (final (ex, s, count) in recentPrs)
           Card(
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
             child: ListTile(
@@ -114,7 +120,10 @@ class ProgressTab extends StatelessWidget {
                 child: const Icon(Icons.emoji_events, color: Colors.amber, size: 21),
               ),
               title: Text(ex.name, style: const TextStyle(fontWeight: FontWeight.w600)),
-              subtitle: Text(formatDay(parseDateKey(s.date)),
+              subtitle: Text(
+                  count > 1
+                      ? '${formatDay(parseDateKey(s.date))} · $count ${count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 12 || count % 100 > 14) ? 'rekordy' : 'rekordów'} w 30 dni'
+                      : formatDay(parseDateKey(s.date)),
                   style: TextStyle(color: context.shade(0.38), fontSize: 12)),
               trailing: Text(formatSet(ex, s), style: const TextStyle(fontWeight: FontWeight.bold)),
               onTap: () => openExercise(context, ex.id, tab: ExerciseTab.graph),
@@ -138,6 +147,14 @@ class ProgressTab extends StatelessWidget {
     );
   }
 }
+
+/// How impressive a record set is, comparable within one exercise.
+double _prScore(Exercise ex, WorkoutSet s) => switch (ex.kind) {
+      ExerciseKind.weightReps => epley1rm(s.weight, s.reps),
+      ExerciseKind.bodyweight => s.reps + s.weight / 1000,
+      ExerciseKind.duration => s.seconds.toDouble(),
+      ExerciseKind.cardio => s.distance > 0 ? s.distance : s.seconds.toDouble(),
+    };
 
 class _Heatmap extends StatelessWidget {
   final DateTime weekStart;

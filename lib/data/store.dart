@@ -103,6 +103,7 @@ class AppStore extends ChangeNotifier {
   void setThemeMode(String mode) {
     if (themeMode == mode) return;
     themeMode = mode;
+    notifyListeners();
     _save();
   }
 

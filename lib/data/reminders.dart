@@ -23,8 +23,7 @@ class ReminderService {
     if (_ready || kIsWeb || !Platform.isAndroid) return;
     try {
       tzdata.initializeTimeZones();
-      await _plugin.initialize(
-          settings: const InitializationSettings(
+      await _plugin.initialize(const InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       ));
       await _plugin
@@ -56,11 +55,11 @@ class ReminderService {
           if (day.isRest) continue;
           final name = day.name.isEmpty ? weekdayNames[wd - 1] : day.name;
           await _plugin.zonedSchedule(
-            id: wd,
-            title: 'Trening: $name',
-            body: 'Dziś w planie ${day.exerciseIds.length} ćw. — do dzieła!',
-            scheduledDate: _nextWeekdayAt(wd),
-            notificationDetails: details,
+            wd,
+            'Trening: $name',
+            'Dziś w planie ${day.exerciseIds.length} ćw. — do dzieła!',
+            _nextWeekdayAt(wd),
+            details,
             androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
             matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
           );

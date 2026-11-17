@@ -89,7 +89,6 @@ class _ExerciseBrowserState extends State<ExerciseBrowser> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: ChoiceChip(
-                  avatar: CircleAvatar(backgroundColor: c.color, radius: 5),
                   label: Text(c.label),
                   selected: _category == c,
                   onSelected: (_) => setState(() => _category = _category == c ? null : c),
@@ -106,7 +105,7 @@ class _ExerciseBrowserState extends State<ExerciseBrowser> {
                 itemCount: rows.length,
                 itemBuilder: (context, i) {
                   final row = rows[i];
-                  if (row is MuscleCategory) return SectionHeader(row.label);
+                  if (row is MuscleCategory) return SectionHeader(row.label, color: row.color);
                   final e = row as Exercise;
                   final selected = widget.selected;
                   return FadeSlide(
@@ -117,12 +116,20 @@ class _ExerciseBrowserState extends State<ExerciseBrowser> {
                       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
                       leading: selected != null
                           ? Checkbox(value: selected.contains(e.id), onChanged: (_) => widget.onTap(e))
-                          : CategoryAvatar(e.category),
+                          : Container(
+                              width: 4,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: e.category.color,
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                      minLeadingWidth: 4,
                       title: Text(e.name, style: const TextStyle(fontWeight: FontWeight.w600)),
                       subtitle: Text(
                         [
                           if (e.equipment.isNotEmpty) e.equipment,
-                          if (hasFullAnalysis(e)) 'pełna analiza AI',
+                          if (hasFullAnalysis(e)) 'analiza techniki',
                           if (e.custom) 'własne',
                         ].join(' · '),
                         style: TextStyle(color: context.shade(0.38), fontSize: 12),

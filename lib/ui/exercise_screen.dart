@@ -105,11 +105,16 @@ class _HowToTab extends StatelessWidget {
         ),
       ),
       Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-        child: Wrap(spacing: 8, runSpacing: 8, children: [
-          Chip(avatar: CircleAvatar(backgroundColor: ex.category.color), label: Text(ex.category.label)),
-          if (ex.equipment.isNotEmpty) Chip(avatar: const Icon(Icons.fitness_center, size: 18), label: Text(ex.equipment)),
-          for (final m in ex.muscles) Chip(label: Text(m)),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            [ex.category.label, if (ex.equipment.isNotEmpty) ex.equipment].join('  ·  '),
+            style: TextStyle(color: ex.category.color, fontWeight: FontWeight.w700, fontSize: 13),
+          ),
+          if (ex.muscles.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(ex.muscles.join(', '), style: TextStyle(color: context.shade(), fontSize: 13)),
+          ],
         ]),
       ),
       Padding(
@@ -593,9 +598,11 @@ class _GraphTabState extends State<_GraphTab> {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: GridView.count(
           crossAxisCount: 2,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          childAspectRatio: 1.7,
+          childAspectRatio: 1.6,
           children: cards,
         ),
       ),

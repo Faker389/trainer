@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.example.trainer"
-    compileSdk = 37
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
